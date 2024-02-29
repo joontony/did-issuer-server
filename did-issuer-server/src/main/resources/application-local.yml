@@ -1,0 +1,115 @@
+server:
+  port: 30010
+
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+#        dialect.storage_engine: InnoDB
+        show_sql: false
+    # ddl-auto 후에 Stub Data가 실행
+    defer-datasource-initialization: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/issuer?rewriteBatchedStatements=true
+    username: root
+
+  sql:
+    init:
+      # Stub Data를 위해 실행할 sql 파일 경로 설정
+      data-locations: classpath:env/data.sql
+      mode: always
+
+#logging:
+#  level:
+#    org.snubi.did.issuerserver.service: debug
+
+######## CustomConfig 설정
+
+http:
+  response:
+    auth:
+      token: Bearer
+      header: Authorization
+      claims:
+        issue: issue
+
+security:
+  oauth2:
+    resource:
+      jwt:
+        key-value: snubimanse
+        expired: 36000000
+
+kubernetes:
+  server:
+    url: http://example.com
+    ip: 111.111.111.111
+
+vc:
+  context: https://www.w3.org/2018/credentials/v1
+  credential_id: https://did.avchain.io/credential/
+  type:
+    avChain: VerifiableCredential,AvChainCredential
+    club: VerifiableCredential,ClubVerifiableCredential
+    proof: RsaVerificationKey2018
+  verification:
+    method:
+      avChain: https://resolver.avchain.io/authentication/
+      club: https://resolver.avchain.io/service/
+  proof_purpose: assertionMethod
+  avChainSecretKey: MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCrbsl8WVULFxOwHN3e4+ugnl26dS5nxpyM8qfXtvbLOb0I1pPhfKtMidbnEdizJd0SPVJCQIpIPUUeCJNAxoMXkpTesClzRBhF9gUS2hlPln7LHU1E0ttCwSZmpiwOxcSLtHA+x8i7iiANxTAPMATrjgXCuKVqyBlEKGssBtRLQoSQNfmYEDkUdXk+dqloBMOk7BHhumPma5pI6dvdZGk+G20iT+p/oi/Bt2Z45PWX4HQ0omkp9blpILIRVvx4VBWUy5jsIDaRF/CLcdmAGhYvfmCDDz8rjOrUeFPbG4+rq6Fn9PqWROaymwBV8BQ4bukZzJxePJgPu7cKJYsHDX4nAgMBAAECggEAF0eKlde9rC1cj5BD8sYJk7ydprnN7Oq0DJHRCAKA/fTfvikBWN/olRKsu6EZR66PGDB6kKOaA5hKX/szH9s1JwjRLXJHlq77CtkPNFGomT2rByL6AKwPeT+oWs0a84CYoY4FpgjUMd9eXfBWh+Fx8ZjOIHSZhegZQj+o2ggtYPC1CMAw6zXg0g3ckOUR+j8R3Ag4S3ThUhwUW50bM+fWYBmEW8iUft05mdMLniXwulVUNYsgHxfrG3r+c4q9j6Jh2D3Md/DqedxRtIsCmuNk3911yPDoF/u+HKCnNk6CrYTOYj0tlC9ofWVfHWLEJz9wL80bUsxapcA8JNBFNAkz0QKBgQDYyIteE3NGnh9y2PiE0gyaEqWQIES1SFgSoBi04nQLxN5BRZbxl485ddmrUwD8JiW/4Iozd0YbLIlKhcMKX0+zAtz/0swQ6PY+68WvZ6fUzS8S/GU8nh95aztmyqXRCaqAPAj8GPv1by/evTam54+5WhI5fC37b4tZI5XaeXcEEQKBgQDKcgKcdKsZU5xTJnaYeTsrQFHcIeCNjTj0eXDkrM9rnRziEdNisaDzTaU4+lLBKAexyVHD3bCEuXXSkRwa4GwdV4iadVp2qtO8rHeP6hrX6EMHq+VPM6Pkx42PkAsrF8ku5Di/Aex8DIXwxhsHHHGbCbgjkpKMDb8P1/cWXD42twKBgHpYfGdkvMtfFEqh72guj9Qor+3ueDiDksk4N5lmsK2vtuvJlY3VxoxcWbOaTdUAxo9K71RqfVN6yCUZ5uCkt/tEo2tyEZ99ivQp5lC/RHYSMv4ZGh2i9Ap3nXe+6ORX+zUSLNPyWcjDrpWb3gtGZtPp5J0y21SrOE7fiYRaxvOxAoGBAIuYmFJYZM8/B1GS+T5kgjdtz8Sym4wgMIDr6LvWqeSz3wHIdvHcOHbtOJwUiNHmj3+5qacdDCZJWISNSUsDK6oD/Q89Etc3LnAwoPVc4Yu1/dqhXqsBmecc73FqSzk42qJ5/uM/KVnUrNt9T4/UvkXBKvdkj6cBp5j+O8RwcPn7AoGBANe1rux6RYE8Hld8BJ7ZwN1lrBc4CaBjk1aATN5RgGuZPHupBQXh3R+nzagvpT6kxikrlANPfiFa++o73JIZoAoxgNSfrBwLdii/nmmqrvpzMcUAoSF8wuA5HRcbzSIiv0oOn7N2R886QNNNBks9o7nYAj0VAcjewEnqrZfLh19d
+  avChainPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq27JfFlVCxcTsBzd3uProJ5dunUuZ8acjPKn17b2yzm9CNaT4XyrTInW5xHYsyXdEj1SQkCKSD1FHgiTQMaDF5KU3rApc0QYRfYFEtoZT5Z+yx1NRNLbQsEmZqYsDsXEi7RwPsfIu4ogDcUwDzAE644FwrilasgZRChrLAbUS0KEkDX5mBA5FHV5PnapaATDpOwR4bpj5muaSOnb3WRpPhttIk/qf6IvwbdmeOT1l+B0NKJpKfW5aSCyEVb8eFQVlMuY7CA2kRfwi3HZgBoWL35ggw8/K4zq1HhT2xuPq6uhZ/T6lkTmspsAVfAUOG7pGcycXjyYD7u3CiWLBw1+JwIDAQAB
+
+did:
+  server:
+    url: https://rhymwefwegecard.avchain.io:31001
+    club:
+      after:
+        create:
+          issuer: ${did.server.url}/club/after/create/issuer
+        excel:
+          issuer: ${did.server.url}/club/after/excel/issuer
+          reinvite: ${did.server.url}/club/after/excel/reinvite
+        mobile:
+          excel:
+            issuer: ${did.server.url}/club/after/mobile/excel/issuer
+      qrcode:
+        complete: ${did.server.url}/club/qrcode/complete
+      personal:
+        message:
+          entity:
+            listener: ${did.server.url}/club/personal/message/entity/listener
+
+  resolver:
+    server:
+      url: https://resolfdsffsdver.avchain.io:31000
+      signature:
+        create: ${did.resolver.server.url}/signature/create
+
+  issuer:
+    pod:
+      url: https://avchain2.snubi.org:31030
+      credential:
+        club:
+          signature: ${did.issuer.pod.url}/credential/club/signature
+      presentation:
+        verification:
+          club: ${did.issuer.pod.url}/presentation/verification/club
+    server:
+      url: http://localhost:30010
+      presentation:
+        verification: ${did.issuer.server.url}/presentation/verification
+
+allowed:
+  origins: https://club.avchain.io:32000,http://172.30.1.26:3000,http://localhost:8081,http://localhost:3000,http://localhost:3001,http://192.168.0.48:3001,https://avchain8.snubi.org:19911,https://develop.snubi.org:19111
+
+batch:
+  size: 1000
